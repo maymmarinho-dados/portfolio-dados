@@ -1,5 +1,7 @@
 # Portfólio de Dados
 
+![Banner do portfólio de dados](assets/banner-portfolio-dados.png)
+
 Projetos práticos de **análise de dados, SQL e engenharia analítica**, construídos com dados públicos. Cada projeto documenta a pergunta de negócio, a fonte, a lógica analítica, os resultados e as limitações.
 
 > **Em desenvolvimento:** o portfólio está começando pelo projeto Justiça em Números, do CNJ. Os resultados serão adicionados após validar e executar as consultas contra o esquema oficial.
