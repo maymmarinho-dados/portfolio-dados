@@ -77,10 +77,11 @@ A consulta lê o ano imediatamente anterior a `ano_inicial` para poder calcular 
 
 1. **`fonte`**: limita a janela temporal, aplica o filtro opcional e converte `valor` para número com `SAFE_CAST`.
 2. **`qualidade`**: agrupa por ano, tribunal e sigla; conta registros, valores numéricos distintos e conversões nulas. Só define `valor_indicador` quando existe exatamente um valor numérico distinto. Se houver conflito, deixa o valor nulo.
-3. **`valores_validos`**: retira chaves com zero ou mais de um valor distinto. Esses conflitos não entram nas variações nem no ranking.
+3. **`valores_validos`**: encaminha à série temporal apenas chaves com exatamente um valor numérico distinto. Chaves sem valor ou com conflito não entram nas variações nem no ranking.
 4. **`serie`**: usa `LAG` para recuperar ano e valor anteriores dentro de cada tribunal e indicador.
 5. **`metricas`**: calcula variação absoluta e percentual apenas quando a linha anterior é do ano imediatamente precedente. O percentual fica nulo se o ano não for consecutivo, se não houver anterior ou se o anterior for zero.
 6. **`ranked`**: aplica `DENSE_RANK` por ano e indicador, do maior valor para o menor. Empates compartilham a mesma posição e a posição seguinte não é pulada.
+7. **Saída final**: parte de todas as chaves da CTE `qualidade` e faz `LEFT JOIN` com as métricas válidas. Assim, conflitos e registros sem valor numérico aparecem com `status_qualidade`, enquanto suas métricas e ranking ficam nulos.
 
 ### Colunas entregues
 
@@ -98,6 +99,7 @@ A consulta lê o ano imediatamente anterior a `ano_inicial` para poder calcular 
 | `quantidade_registros` | Quantas linhas fonte foram agrupadas para a chave proposta. |
 | `quantidade_valores_distintos` | Quantidade de valores numéricos distintos observados para a chave. |
 | `quantidade_valores_invalidos` | Quantos valores não puderam ser convertidos em número ou eram nulos. |
+| `status_qualidade` | Rótulo criado pela consulta: indica chaves sem valor numérico, valores conflitantes, linhas múltiplas ou conversões inválidas. |
 
 ### O que o analista pode fazer com a saída
 
@@ -113,7 +115,7 @@ A consulta lê o ano imediatamente anterior a `ano_inicial` para poder calcular 
 - O valor não tem unidade própria sem o mapeamento da sigla. Não compare indicadores distintos entre si.
 - A consulta assume uma chave composta por `ano`, `sigla_tribunal` e `sigla_indicador`. Se o esquema contiver dimensões adicionais, inclua-as no agrupamento, nas funções de janela e no ranking. Caso contrário, recortes diferentes podem ser tratados indevidamente como conflitos.
 - Um ou mais valores distintos na mesma chave podem indicar dimensão omitida, não erro da fonte.
-- `01_perfil_indicadores.sql` conta nulos/conversões inválidas; em `02_evolucao_ranking.sql`, esses registros não constituem valor numérico distinto. Chaves sem exatamente um valor numérico distinto são excluídas da série final.
+- `01_perfil_indicadores.sql` conta nulos/conversões inválidas. Em `02_evolucao_ranking.sql`, chaves sem exatamente um valor numérico distinto aparecem na saída com `status_qualidade`, mas não recebem variação nem ranking.
 - Os scripts foram revisados estaticamente, mas ainda precisam ser executados no BigQuery depois de validar o esquema real.
 
 ## Fonte e documentação

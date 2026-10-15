@@ -89,19 +89,42 @@ ranked AS (
   FROM metricas
 )
 
+-- Mantém todas as chaves na saída para que conflitos também sejam visíveis.
+-- Métricas e ranking só existem para chaves com exatamente um valor numérico.
 SELECT
-  ano,
-  sigla_tribunal,
-  sigla_indicador,
-  valor_indicador,
-  ano_anterior,
-  valor_ano_anterior,
-  variacao_absoluta,
-  variacao_percentual,
-  ranking_maior_valor,
-  quantidade_registros,
-  quantidade_valores_distintos,
-  quantidade_valores_invalidos
-FROM ranked
-WHERE ano BETWEEN ano_inicial AND ano_final
-ORDER BY ano DESC, sigla_indicador, ranking_maior_valor, sigla_tribunal;
+  q.ano,
+  q.sigla_tribunal,
+  q.sigla_indicador,
+  r.valor_indicador,
+  r.ano_anterior,
+  r.valor_ano_anterior,
+  r.variacao_absoluta,
+  r.variacao_percentual,
+  r.ranking_maior_valor,
+  q.quantidade_registros,
+  q.quantidade_valores_distintos,
+  q.quantidade_valores_invalidos,
+  CASE
+    WHEN q.quantidade_valores_distintos = 0
+      THEN 'REVISAR: sem valor numérico válido'
+    WHEN q.quantidade_valores_distintos > 1
+      THEN 'REVISAR: valores conflitantes na chave'
+    WHEN q.quantidade_registros > 1 AND q.quantidade_valores_invalidos > 0
+      THEN 'ATENÇÃO: duplicados e valores nulos/não numéricos'
+    WHEN q.quantidade_registros > 1
+      THEN 'ATENÇÃO: múltiplas linhas com valor consistente'
+    WHEN q.quantidade_valores_invalidos > 0
+      THEN 'ATENÇÃO: valor nulo/não numérico'
+    ELSE 'OK'
+  END AS status_qualidade
+FROM qualidade AS q
+LEFT JOIN ranked AS r
+  ON q.ano = r.ano
+  AND q.sigla_tribunal = r.sigla_tribunal
+  AND q.sigla_indicador = r.sigla_indicador
+WHERE q.ano BETWEEN ano_inicial AND ano_final
+ORDER BY
+  q.ano DESC,
+  q.sigla_indicador,
+  r.ranking_maior_valor,
+  q.sigla_tribunal;
