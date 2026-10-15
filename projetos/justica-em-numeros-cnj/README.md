@@ -26,6 +26,7 @@ justica-em-numeros-cnj/
 ├── docs/
 │   └── dicionario-de-dados.md
 └── sql/
+    ├── README.md
     ├── 00_inspecao_esquema.sql
     ├── 01_perfil_indicadores.sql
     └── 02_evolucao_ranking.sql
@@ -38,6 +39,8 @@ justica-em-numeros-cnj/
 3. Execute `sql/01_perfil_indicadores.sql` para conferir cobertura e domínio das siglas.
 4. Confira o dicionário de códigos oficial da base para mapear sigla, descrição, unidade, fórmula e polaridade.
 5. Execute `sql/02_evolucao_ranking.sql` apenas depois de validar que os campos `ano`, `sigla_tribunal`, `sigla_indicador` e `valor` correspondem ao esquema e que a chave analítica considera todas as dimensões existentes.
+
+Para entender o objetivo, a lógica e as colunas devolvidas por cada script, consulte [`sql/README.md`](sql/README.md).
 
 ## Decisões analíticas
 
