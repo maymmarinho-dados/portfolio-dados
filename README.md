@@ -2,7 +2,8 @@
 
 ![Banner do portfólio de dados](assets/banner-portfolio-dados.png)
 
-Projetos práticos de **análise de dados, SQL e engenharia analítica**, construídos com dados públicos. Cada projeto documenta a pergunta de negócio, a fonte, a lógica analítica, os resultados e as limitações.
+Bem vindo ao meu portfólio de projetos práticos de análise de dados, SQL e engenharia analítica, desenvolvidos a partir de fontes de dados públicos. Cada projeto apresenta uma abordagem estruturada, contemplando a definição do problema de negócio, a identificação das fontes, a construção da lógica analítica, a validação dos dados, a análise dos resultados e o registro de limitações e premissas.
+
 
 > **Em desenvolvimento:** o esquema oficial do projeto Justiça em Números, do CNJ, já foi documentado. Os resultados serão adicionados após executar as verificações de granularidade e as consultas no BigQuery.
 
@@ -23,7 +24,7 @@ Análise exploratória dos indicadores do CNJ por tribunal e ano. O trabalho est
 
 ## Contato
 
-Adicione aqui o link direto para seu perfil do LinkedIn para facilitar o contato de recrutadores.
+www.linkedin.com/in/mayara-duarte-a7492318a
 
 ## Sobre este portfólio
 
