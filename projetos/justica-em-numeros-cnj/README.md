@@ -28,6 +28,7 @@ A análise foi planejada para responder:
 
 - Consultas BigQuery Standard SQL para descoberta do esquema, perfil das siglas e análise exploratória da série.
 - [Dicionário de dados](docs/dicionario-de-dados.md), com definições conceituais, unidades/polaridades a mapear e validações necessárias.
+- [Catálogo dos 1.305 indicadores](docs/catalogo-indicadores.md), com o [CSV completo de códigos e descrições](docs/indicadores_disponiveis_2026-06.csv) e orientações de tratamento.
 - [Guia das consultas](sql/README.md), com entradas, etapas, campos entregues e limites de interpretação.
 
 ## Estrutura
@@ -36,12 +37,15 @@ A análise foi planejada para responder:
 justica-em-numeros-cnj/
 ├── README.md
 ├── docs/
-│   └── dicionario-de-dados.md
+│   ├── dicionario-de-dados.md
+│   ├── catalogo-indicadores.md
+│   └── indicadores_disponiveis_2026-06.csv
 └── sql/
     ├── README.md
     ├── 00_inspecao_esquema.sql
     ├── 01_perfil_indicadores.sql
-    └── 02_evolucao_ranking.sql
+    ├── 02_evolucao_ranking.sql
+    └── 03_catalogo_indicadores.sql
 ```
 
 ## Como reproduzir
@@ -51,7 +55,8 @@ justica-em-numeros-cnj/
 3. Rode [`01_perfil_indicadores.sql`](sql/01_perfil_indicadores.sql) para identificar siglas, cobertura e ramos da Justiça.
 4. Consulte os dicionários auxiliares do dataset e do CNJ para obter a descrição, fórmula, unidade, escopo e polaridade de cada indicador escolhido.
 5. Execute [`02_evolucao_ranking.sql`](sql/02_evolucao_ranking.sql) para o indicador validado; a análise considera o ramo da Justiça na chave, na série temporal e no ranking.
-6. Registre a data de extração e documente os resultados, as limitações e a unidade de cada número antes de publicar.
+6. Use [`03_catalogo_indicadores.sql`](sql/03_catalogo_indicadores.sql) para consultar os códigos, descrições e cobertura observada.
+7. Registre a data de extração e documente os resultados, as limitações e a unidade de cada número antes de publicar.
 
 Detalhes de cada script: [guia das consultas SQL](sql/README.md).
 

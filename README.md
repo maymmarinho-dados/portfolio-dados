@@ -16,7 +16,7 @@ Análise exploratória dos indicadores do CNJ por tribunal e ano. O trabalho est
 - **Tecnologias:** SQL, Google BigQuery e Base dos Dados.
 - **Foco analítico:** evolução temporal, comparabilidade e qualidade dos dados.
 - **Status:** esquema e chave oficial confirmados na documentação; validação dos dados correntes e dos códigos dos indicadores pendente.
-- **Comece por:** [README do projeto](projetos/justica-em-numeros-cnj/README.md) · [guia das consultas SQL](projetos/justica-em-numeros-cnj/sql/README.md) · [dicionário de dados](projetos/justica-em-numeros-cnj/docs/dicionario-de-dados.md).
+- **Comece por:** [README do projeto](projetos/justica-em-numeros-cnj/README.md) · [guia das consultas SQL](projetos/justica-em-numeros-cnj/sql/README.md) · [catálogo dos indicadores](projetos/justica-em-numeros-cnj/docs/catalogo-indicadores.md) · [CSV com os 1.305 códigos](projetos/justica-em-numeros-cnj/docs/indicadores_disponiveis_2026-06.csv).
 
 ## Tecnologias e temas
 

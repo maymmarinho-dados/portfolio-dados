@@ -10,6 +10,7 @@ Esta pasta contém um fluxo exploratório em três etapas para trabalhar com a t
 2. `01_perfil_indicadores.sql` — cobertura por indicador e número de ramos.
 3. Consulte o dicionário auxiliar para descrever as siglas e os sufixos.
 4. `02_evolucao_ranking.sql` — evolução temporal e ranking dentro do mesmo ramo.
+5. `03_catalogo_indicadores.sql` — lista os códigos e descrições e consulta cobertura.
 
 ## 00 — Inspeção do esquema (`00_inspecao_esquema.sql`)
 
@@ -121,10 +122,17 @@ A consulta lê o ano imediatamente anterior a `ano_inicial` para poder calcular 
 - `01_perfil_indicadores.sql` conta nulos/conversões inválidas. Em `02_evolucao_ranking.sql`, chaves sem exatamente um valor numérico distinto aparecem na saída com `status_qualidade`, mas não recebem variação nem ranking.
 - O esquema e a regra de unicidade foram confirmados no código e no schema YAML oficiais da Base dos Dados. O teste de unicidade sobre os dados correntes ainda precisa ser executado no BigQuery; a documentação pública não substitui a execução na tabela.
 
+## 03 — Catálogo (`03_catalogo_indicadores.sql`)
+
+O script contém três consultas: **A** lista o dicionário completo de códigos e descrições; **B** combina cada código com a quantidade de observações e a cobertura temporal observada; **C** mostra a série de um código informado na variável `indicador_filtro` (o exemplo inicial é `tc`). O filtro do dicionário usa `id_tabela = 'tribunal_ano'` e `nome_coluna = 'sigla_indicador'`.
+
+O catálogo CSV junto da documentação deste projeto enumera os 1.305 códigos da publicação CNJ de junho de 2026. A saída do BigQuery é preferível para saber a lista e a cobertura da tabela corrente.
+
 ## Fonte e documentação
 
 - [Tabela Justiça em Números (DataJud) — Base dos Dados](https://basedosdados.org/dataset/60de97a5-aae7-4cda-871f-b314b497d768)
 - [Schema YAML oficial — Base dos Dados](https://github.com/basedosdados/pipelines/blob/main/models/br_cnj_datajud/schema.yml)
 - [SQL oficial de transformação — Base dos Dados](https://github.com/basedosdados/pipelines/blob/main/models/br_cnj_datajud/br_cnj_datajud__tribunal_ano.sql)
 - [Dicionário de dados deste projeto](../docs/dicionario-de-dados.md)
+- [Catálogo completo e regras de tratamento](../docs/catalogo-indicadores.md)
 - [Glossário dos Indicadores de Desempenho — CNJ](https://www.cnj.jus.br/wp-content/uploads/2026/02/glossario-indicadores-desempenho-13-02-2026.pdf)
