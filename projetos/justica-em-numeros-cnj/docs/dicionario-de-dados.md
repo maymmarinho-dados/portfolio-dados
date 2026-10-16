@@ -9,22 +9,23 @@
 | Tabela | `basedosdados.br_cnj_datajud.tribunal_ano` |
 | Conteúdo | Indicadores agregados do Poder Judiciário por tribunal e ano, com códigos de indicadores e atributos auxiliares no dataset. A descrição geral informa também recortes por grau e fase processual. |
 | Cobertura descrita | Brasil, 2009–2025 |
-| Granularidade da análise proposta | Ano + tribunal + indicador, sujeita a ajuste conforme dimensões físicas da tabela. |
+| Granularidade documentada | Uma linha por ano + tribunal + ramo da Justiça + indicador. O schema oficial declara essa combinação única. |
 
 A página da Base dos Dados informa que o dataset inclui indicadores como casos novos, casos pendentes, taxa de congestionamento, índice de atendimento à demanda e IPC-Jus, além de tabelas auxiliares de tribunais e dicionário de códigos. Ela também observa que códigos institucionais podem variar entre anos.
 
-## Campos usados no script
+## Campos da tabela
 
-**Validação pendente:** não foi possível confirmar todo o esquema físico pelo catálogo extraído. O BigQuery sugeriu `sigla_indicador` como nome de campo e rejeitou `grau` na tabela consultada. A coluna `valor` e os tipos precisam ser conferidos na aba **Esquema** ou em `INFORMATION_SCHEMA` antes de serem tratados como definitivos.
+O schema e o SQL de transformação publicados pela Base dos Dados confirmam os cinco campos abaixo. A consulta `00_inspecao_esquema.sql` do projeto permite verificar os tipos e a unicidade diretamente no BigQuery atual. A definição de chave única é documental até que essa consulta seja executada.
 
 | Campo | Definição de trabalho | Uso analítico | Confiança / validação |
 |---|---|---|---|
-| `ano` | Ano de referência do indicador. | Filtro temporal e ordenação da série. | Nome usado pela consulta; confirmar nome e tipo. |
-| `sigla_tribunal` | Código/sigla associado ao tribunal. | Identificação da unidade judiciária e agrupamento. | Nome usado pela consulta; validar domínio e mudanças de códigos por ano. |
-| `sigla_indicador` | Código curto para o indicador estatístico. | Seleção e partição de comparações por métrica. | Nome sugerido pelo BigQuery em erro anterior; validar tipo e catálogo de códigos. |
-| `valor` | Medida correspondente à sigla de indicador, se este for o campo real. | Valor de origem para variação e ranking. | Nome e tipo ainda precisam de confirmação; unidade depende do indicador. |
-| `grau` | Possível dimensão de grau/instância. | Recorte analítico caso exista em tabela ou campo apropriado. | BigQuery retornou “Unrecognized name”; não utilizar como coluna desta tabela sem encontrar nome alternativo. |
-| `fase` | Possível dimensão de fase processual. | Recorte analítico caso exista no esquema. | Não confirmada na tabela. |
+| `ano` | `INT64`, ano de referência da estatística. | Filtro temporal e ordenação da série. | Confirmado no SQL de transformação oficial. |
+| `sigla_tribunal` | `STRING`, sigla do tribunal a que a estatística se refere. | Identificação da unidade judiciária. | Integra a chave única. Códigos institucionais podem variar entre anos. |
+| `ramo_justica` | `STRING`, ramo sob o qual o CNJ reporta a estatística. | Estratificação e comparações entre unidades do mesmo ramo. | Integra a chave única; a fonte cita STM reportado em dois ramos. |
+| `sigla_indicador` | `STRING`, código do indicador estatístico do CNJ. | Identificação da métrica e dos recortes codificados. | Grau e fase processual são codificados no sufixo do código, não em campos separados nesta tabela. |
+| `valor` | `FLOAT64`, valor numérico do indicador. | Métrica de origem para variação e ranking. | Unidade e significado dependem do código e do dicionário auxiliar. |
+
+**Chave única documentada:** (`ano`, `sigla_tribunal`, `ramo_justica`, `sigla_indicador`). O schema oficial associa a tabela a um teste de unicidade dessa combinação. Execute a consulta de validação do repositório para confirmar o estado da tabela corrente.
 
 ### Consulta para inspecionar colunas e tipos
 
@@ -47,7 +48,8 @@ SELECT
   COUNT(*) AS linhas,
   MIN(ano) AS primeiro_ano,
   MAX(ano) AS ultimo_ano,
-  COUNT(DISTINCT sigla_tribunal) AS tribunais
+  COUNT(DISTINCT sigla_tribunal) AS tribunais,
+  COUNT(DISTINCT ramo_justica) AS ramos_justica
 FROM `basedosdados.br_cnj_datajud.tribunal_ano`
 GROUP BY sigla_indicador
 ORDER BY sigla_indicador;
@@ -71,10 +73,10 @@ As descrições a seguir representam conceitos do CNJ. Elas não substituem o ma
 | Campo derivado | Cálculo | Interpretação |
 |---|---|---|
 | `valor_indicador` | Valor limpo/consolidado da chave analítica. | Unidade é definida pelo indicador; não comparar entre métricas distintas. |
-| `valor_ano_anterior` | `LAG(valor_indicador)` por tribunal e indicador, ordenado por ano. | Pode ser de ano não consecutivo quando há lacuna, exceto se o SQL validar a continuidade. |
+| `valor_ano_anterior` | `LAG(valor_indicador)` por tribunal, ramo e indicador, ordenado por ano. | Pode ser de ano não consecutivo quando há lacuna, exceto se o SQL validar a continuidade. |
 | `variacao_absoluta` | Valor atual menos valor anterior. | Diferença na unidade original. |
 | `variacao_percentual` | `(valor atual - valor anterior) / ABS(valor anterior)`. | Proporção; `0.10` equivale a 10%. Indefinida se o anterior for zero/ausente. |
-| `ranking_no_indicador` | `DENSE_RANK` dentro do mesmo ano e indicador, do maior para o menor valor. | Ordenação matemática, não avaliação automática de melhor/pior tribunal. Aplicar polaridade para interpretar. |
+| `ranking_no_indicador` | `DENSE_RANK` dentro do mesmo ano, ramo e indicador, do maior para o menor valor. | Ordenação matemática, não avaliação automática de melhor/pior tribunal. Aplicar polaridade para interpretar. |
 | `quantidade_registros` | Número de linhas da chave agrupada. | Sinal para investigar granularidade, duplicatas e dimensões omitidas. |
 | `quantidade_valores_distintos` | Número de valores numéricos distintos na chave. | Mais de um pode indicar conflito ou dimensões legítimas não consideradas. |
 | `status_qualidade` | Classificação derivada das contagens de consistência. | Regra analítica do projeto, não dado original do CNJ. |
@@ -92,5 +94,7 @@ As descrições a seguir representam conceitos do CNJ. Elas não substituem o ma
 ## Referências
 
 - [Dataset Justiça em Números (DataJud) — Base dos Dados](https://basedosdados.org/dataset/60de97a5-aae7-4cda-871f-b314b497d768)
+- [Schema YAML oficial — Base dos Dados](https://github.com/basedosdados/pipelines/blob/main/models/br_cnj_datajud/schema.yml)
+- [SQL oficial de transformação — Base dos Dados](https://github.com/basedosdados/pipelines/blob/main/models/br_cnj_datajud/br_cnj_datajud__tribunal_ano.sql)
 - [Glossário dos Indicadores de Desempenho — CNJ, fevereiro de 2026](https://www.cnj.jus.br/wp-content/uploads/2026/02/glossario-indicadores-desempenho-13-02-2026.pdf)
 - [Base de dados do Justiça em Números — CNJ](https://www.cnj.jus.br/pesquisas-judiciarias/justica-em-numeros/base-de-dados/)

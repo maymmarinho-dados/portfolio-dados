@@ -1,11 +1,13 @@
 -- 02 — Evolução anual e ranking descritivo por indicador
 -- BigQuery Standard SQL
 --
--- PRÉ-REQUISITO: execute 00_inspecao_esquema.sql e valide estes campos:
---   ano, sigla_tribunal, sigla_indicador, valor
+-- ESQUEMA OFICIAL: ano, sigla_tribunal, ramo_justica,
+--   sigla_indicador, valor.
+-- Chave analítica documentada: ano + sigla_tribunal + ramo_justica
+--   + sigla_indicador. Execute 00_inspecao_esquema.sql para testar unicidade.
 -- Confirme no dicionário CNJ/Base dos Dados a sigla, unidade e polaridade.
--- Se houver outras dimensões na tabela (ex.: ramo, recorte ou fase), inclua-as
--- na chave em CTEs, janelas e agrupamentos antes de interpretar resultados.
+-- Grau e fase processual estão incorporados ao código/sufixo de sigla_indicador,
+-- não são colunas físicas desta tabela.
 --
 -- O ranking é do maior valor para o menor; não significa melhor desempenho.
 
@@ -17,6 +19,7 @@ WITH fonte AS (
   SELECT
     ano,
     sigla_tribunal,
+    ramo_justica,
     sigla_indicador,
     SAFE_CAST(valor AS FLOAT64) AS valor_num
   FROM `basedosdados.br_cnj_datajud.tribunal_ano`
@@ -30,6 +33,7 @@ qualidade AS (
   SELECT
     ano,
     sigla_tribunal,
+    ramo_justica,
     sigla_indicador,
     COUNT(*) AS quantidade_registros,
     COUNT(DISTINCT valor_num) AS quantidade_valores_distintos,
@@ -39,7 +43,7 @@ qualidade AS (
       ELSE NULL
     END AS valor_indicador
   FROM fonte
-  GROUP BY ano, sigla_tribunal, sigla_indicador
+  GROUP BY ano, sigla_tribunal, ramo_justica, sigla_indicador
 ),
 
 -- Só entram valores sem conflito na sequência analítica.
@@ -53,11 +57,11 @@ serie AS (
   SELECT
     *,
     LAG(ano) OVER (
-      PARTITION BY sigla_tribunal, sigla_indicador
+      PARTITION BY sigla_tribunal, ramo_justica, sigla_indicador
       ORDER BY ano
     ) AS ano_anterior,
     LAG(valor_indicador) OVER (
-      PARTITION BY sigla_tribunal, sigla_indicador
+      PARTITION BY sigla_tribunal, ramo_justica, sigla_indicador
       ORDER BY ano
     ) AS valor_ano_anterior
   FROM valores_validos
@@ -83,7 +87,7 @@ ranked AS (
   SELECT
     *,
     DENSE_RANK() OVER (
-      PARTITION BY ano, sigla_indicador
+      PARTITION BY ano, ramo_justica, sigla_indicador
       ORDER BY valor_indicador DESC
     ) AS ranking_maior_valor
   FROM metricas
@@ -94,6 +98,7 @@ ranked AS (
 SELECT
   q.ano,
   q.sigla_tribunal,
+  q.ramo_justica,
   q.sigla_indicador,
   r.valor_indicador,
   r.ano_anterior,
@@ -121,10 +126,12 @@ FROM qualidade AS q
 LEFT JOIN ranked AS r
   ON q.ano = r.ano
   AND q.sigla_tribunal = r.sigla_tribunal
+  AND q.ramo_justica = r.ramo_justica
   AND q.sigla_indicador = r.sigla_indicador
 WHERE q.ano BETWEEN ano_inicial AND ano_final
 ORDER BY
   q.ano DESC,
+  q.ramo_justica,
   q.sigla_indicador,
   r.ranking_maior_valor,
   q.sigla_tribunal;

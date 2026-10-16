@@ -9,6 +9,7 @@ SELECT
   MIN(ano) AS primeiro_ano,
   MAX(ano) AS ultimo_ano,
   COUNT(DISTINCT sigla_tribunal) AS quantidade_tribunais,
+  COUNT(DISTINCT ramo_justica) AS quantidade_ramos_justica,
   COUNTIF(SAFE_CAST(valor AS FLOAT64) IS NULL) AS valores_nao_numericos_ou_nulos
 FROM `basedosdados.br_cnj_datajud.tribunal_ano`
 GROUP BY sigla_indicador

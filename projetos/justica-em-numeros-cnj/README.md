@@ -2,7 +2,7 @@
 
 **Análise exploratória em SQL dos indicadores publicados pelo Conselho Nacional de Justiça (CNJ), com acesso pela Base dos Dados e execução no Google BigQuery.**
 
-> **Status: em validação.** O esquema e as siglas de indicadores precisam ser confirmados no BigQuery antes de usar resultados numéricos como conclusões. Este repositório não apresenta insights quantitativos ainda não executados.
+> **Status: esquema documentado confirmado; validação dos dados pendente.** O schema oficial informa cinco colunas e a chave de unicidade. O teste de duplicidades deve ser executado na tabela BigQuery corrente. Este repositório não apresenta insights quantitativos ainda não executados.
 
 ## Pergunta de negócio
 
@@ -21,7 +21,8 @@ A análise foi planejada para responder:
 - **Tabela de trabalho:** `basedosdados.br_cnj_datajud.tribunal_ano`.
 - **Fonte institucional:** [Conselho Nacional de Justiça](https://www.cnj.jus.br/pesquisas-judiciarias/justica-em-numeros/).
 - **Cobertura descrita no catálogo:** Brasil, 2009–2025.
-- **Granularidade considerada inicialmente:** ano + tribunal + indicador. Ela deve ser ajustada se o esquema mostrar dimensões adicionais.
+- **Granularidade oficial:** uma linha por `ano + sigla_tribunal + ramo_justica + sigla_indicador`. A Base dos Dados declara essa combinação como única; o script de inspeção permite testar a afirmação contra os dados publicados.
+- **Recortes por grau/fase:** aparecem codificados no sufixo de `sigla_indicador`, não como colunas independentes nesta tabela.
 
 ## O que este projeto entrega
 
@@ -46,10 +47,10 @@ justica-em-numeros-cnj/
 ## Como reproduzir
 
 1. No BigQuery, fixe o projeto público `basedosdados` e abra `br_cnj_datajud.tribunal_ano`.
-2. Rode [`00_inspecao_esquema.sql`](sql/00_inspecao_esquema.sql). Confirme nomes, tipos e dimensões.
-3. Se os campos esperados existirem ou forem ajustados, rode [`01_perfil_indicadores.sql`](sql/01_perfil_indicadores.sql) para identificar siglas e cobertura.
+2. Rode [`00_inspecao_esquema.sql`](sql/00_inspecao_esquema.sql) para conferir o esquema e verificar chaves repetidas/nulas. O esperado é zero chaves repetidas.
+3. Rode [`01_perfil_indicadores.sql`](sql/01_perfil_indicadores.sql) para identificar siglas, cobertura e ramos da Justiça.
 4. Consulte os dicionários auxiliares do dataset e do CNJ para obter a descrição, fórmula, unidade, escopo e polaridade de cada indicador escolhido.
-5. Atualize a chave analítica se houver outras dimensões. Depois execute [`02_evolucao_ranking.sql`](sql/02_evolucao_ranking.sql) para o indicador validado.
+5. Execute [`02_evolucao_ranking.sql`](sql/02_evolucao_ranking.sql) para o indicador validado; a análise considera o ramo da Justiça na chave, na série temporal e no ranking.
 6. Registre a data de extração e documente os resultados, as limitações e a unidade de cada número antes de publicar.
 
 Detalhes de cada script: [guia das consultas SQL](sql/README.md).
@@ -86,5 +87,7 @@ Detalhes de cada script: [guia das consultas SQL](sql/README.md).
 ## Referências
 
 - [Dataset Justiça em Números (DataJud) — Base dos Dados](https://basedosdados.org/dataset/60de97a5-aae7-4cda-871f-b314b497d768)
+- [Schema YAML oficial — Base dos Dados](https://github.com/basedosdados/pipelines/blob/main/models/br_cnj_datajud/schema.yml)
+- [SQL oficial de transformação — Base dos Dados](https://github.com/basedosdados/pipelines/blob/main/models/br_cnj_datajud/br_cnj_datajud__tribunal_ano.sql)
 - [Glossário dos Indicadores de Desempenho — CNJ, fevereiro de 2026](https://www.cnj.jus.br/wp-content/uploads/2026/02/glossario-indicadores-desempenho-13-02-2026.pdf)
 - [Base de dados do Justiça em Números — CNJ](https://www.cnj.jus.br/pesquisas-judiciarias/justica-em-numeros/base-de-dados/)

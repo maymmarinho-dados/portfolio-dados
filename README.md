@@ -4,7 +4,7 @@
 
 Projetos práticos de **análise de dados, SQL e engenharia analítica**, construídos com dados públicos. Cada projeto documenta a pergunta de negócio, a fonte, a lógica analítica, os resultados e as limitações.
 
-> **Em desenvolvimento:** o portfólio está começando pelo projeto Justiça em Números, do CNJ. Os resultados serão adicionados após validar e executar as consultas contra o esquema oficial.
+> **Em desenvolvimento:** o esquema oficial do projeto Justiça em Números, do CNJ, já foi documentado. Os resultados serão adicionados após executar as verificações de granularidade e as consultas no BigQuery.
 
 ## Projetos
 
@@ -14,7 +14,7 @@ Análise exploratória dos indicadores do CNJ por tribunal e ano. O trabalho est
 
 - **Tecnologias:** SQL, Google BigQuery e Base dos Dados.
 - **Foco analítico:** evolução temporal, comparabilidade e qualidade dos dados.
-- **Status:** em validação do esquema e dos códigos de indicadores.
+- **Status:** esquema e chave oficial confirmados na documentação; validação dos dados correntes e dos códigos dos indicadores pendente.
 - **Comece por:** [README do projeto](projetos/justica-em-numeros-cnj/README.md) · [guia das consultas SQL](projetos/justica-em-numeros-cnj/sql/README.md) · [dicionário de dados](projetos/justica-em-numeros-cnj/docs/dicionario-de-dados.md).
 
 ## Tecnologias e temas
