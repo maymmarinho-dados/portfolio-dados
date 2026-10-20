@@ -31,6 +31,7 @@ A análise foi planejada para responder:
 - Consultas BigQuery Standard SQL para descoberta do esquema, perfil das siglas e análise exploratória da série.
 - [Dicionário de dados](docs/dicionario-de-dados.md), com definições conceituais, unidades/polaridades a mapear e validações necessárias.
 - [Catálogo dos 1.305 indicadores](docs/catalogo-indicadores.md), com o [CSV completo de códigos e descrições](docs/indicadores_disponiveis_2026-06.csv) e orientações de tratamento.
+- [Roteiro de apresentação do dashboard no Looker Studio](docs/roteiro-apresentacao-dashboard-looker-studio.md), com fala sugerida, sequência das visualizações e campos a preencher após validar os resultados.
 - [Guia das consultas](sql/README.md), com entradas, etapas, campos entregues e limites de interpretação.
 
 ## Estrutura
@@ -41,6 +42,7 @@ justica-em-numeros-cnj/
 ├── docs/
 │   ├── dicionario-de-dados.md
 │   ├── catalogo-indicadores.md
+│   ├── roteiro-apresentacao-dashboard-looker-studio.md
 │   └── indicadores_disponiveis_2026-06.csv
 └── sql/
     ├── README.md
