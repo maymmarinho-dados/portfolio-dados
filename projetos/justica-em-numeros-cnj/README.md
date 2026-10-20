@@ -24,6 +24,8 @@ A análise foi planejada para responder:
 - **Granularidade oficial:** uma linha por `ano + sigla_tribunal + ramo_justica + sigla_indicador`. A Base dos Dados declara essa combinação como única; o script de inspeção permite testar a afirmação contra os dados publicados.
 - **Recortes por grau/fase:** aparecem codificados no sufixo de `sigla_indicador`, não como colunas independentes nesta tabela.
 
+> **Importante:** apesar do identificador técnico `br_cnj_datajud`, a tabela `tribunal_ano` contém indicadores agregados por tribunal e ano; ela não representa registros de processos judiciais individuais.
+
 ## O que este projeto entrega
 
 - Consultas BigQuery Standard SQL para descoberta do esquema, perfil das siglas e análise exploratória da série.
@@ -50,13 +52,16 @@ justica-em-numeros-cnj/
 
 ## Como reproduzir
 
-1. No BigQuery, fixe o projeto público `basedosdados` e abra `br_cnj_datajud.tribunal_ano`.
-2. Rode [`00_inspecao_esquema.sql`](sql/00_inspecao_esquema.sql) para conferir o esquema e verificar chaves repetidas/nulas. O esperado é zero chaves repetidas.
-3. Rode [`01_perfil_indicadores.sql`](sql/01_perfil_indicadores.sql) para identificar siglas, cobertura e ramos da Justiça.
-4. Consulte os dicionários auxiliares do dataset e do CNJ para obter a descrição, fórmula, unidade, escopo e polaridade de cada indicador escolhido.
-5. Execute [`02_evolucao_ranking.sql`](sql/02_evolucao_ranking.sql) para o indicador validado; a análise considera o ramo da Justiça na chave, na série temporal e no ranking.
-6. Use [`03_catalogo_indicadores.sql`](sql/03_catalogo_indicadores.sql) para consultar os códigos, descrições e cobertura observada.
-7. Registre a data de extração e documente os resultados, as limitações e a unidade de cada número antes de publicar.
+As consultas podem ser executadas diretamente no BigQuery Studio; o Apache Hop não é necessário para esta etapa exploratória.
+
+1. Abra o BigQuery Studio e selecione seu próprio projeto Google Cloud para executar as consultas (ou use o BigQuery Sandbox, se disponível).
+2. Consulte a tabela pública pelo nome completo `basedosdados.br_cnj_datajud.tribunal_ano`; não é preciso copiar os dados para seu projeto.
+3. Rode [`00_inspecao_esquema.sql`](sql/00_inspecao_esquema.sql) para conferir o esquema e testar chaves repetidas/nulas. O esperado é zero chaves repetidas, mas esse resultado ainda precisa ser confirmado na tabela corrente.
+4. Rode [`01_perfil_indicadores.sql`](sql/01_perfil_indicadores.sql) para identificar siglas, cobertura e ramos da Justiça.
+5. Consulte os dicionários auxiliares do dataset e do CNJ para confirmar descrição, fórmula, unidade, escopo e polaridade do indicador escolhido.
+6. Execute [`02_evolucao_ranking.sql`](sql/02_evolucao_ranking.sql) após configurar um indicador validado; a análise mantém o ramo da Justiça na chave, na série temporal e no ranking.
+7. Use [`03_catalogo_indicadores.sql`](sql/03_catalogo_indicadores.sql) para consultar códigos, descrições e cobertura observada.
+8. Registre a data de extração e documente resultados validados, limitações e unidades antes de publicar.
 
 Detalhes de cada script: [guia das consultas SQL](sql/README.md).
 

@@ -1,8 +1,10 @@
 # Consultas SQL — Justiça em Números (CNJ)
 
-Esta pasta contém um fluxo exploratório em três etapas para trabalhar com a tabela `basedosdados.br_cnj_datajud.tribunal_ano`. As consultas foram escritas para BigQuery Standard SQL.
+Esta pasta contém três etapas analíticas principais e uma consulta auxiliar de catálogo para trabalhar com `basedosdados.br_cnj_datajud.tribunal_ano`. As consultas foram escritas em BigQuery Standard SQL.
 
 > **Esquema confirmado na documentação técnica oficial da Base dos Dados:** `ano INT64`, `sigla_tribunal STRING`, `ramo_justica STRING`, `sigla_indicador STRING` e `valor FLOAT64`. A chave de unicidade declarada é `ano + sigla_tribunal + ramo_justica + sigla_indicador`. O script `00_inspecao_esquema.sql` permite testar a unicidade e a integridade na tabela BigQuery efetivamente consultada; esse teste de dados ainda precisa ser executado no BigQuery.
+
+> **Execução:** rode os scripts no BigQuery Studio usando seu próprio projeto Google Cloud (ou o Sandbox, se disponível) como projeto de execução. A tabela continua sendo lida da Base dos Dados pelo nome completo; não é necessário carregá-la para seu projeto nem usar Apache Hop nesta etapa.
 
 ## Ordem recomendada
 

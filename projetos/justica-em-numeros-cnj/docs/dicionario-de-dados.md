@@ -76,7 +76,7 @@ As descrições a seguir representam conceitos do CNJ. Elas não substituem o ma
 | `valor_ano_anterior` | `LAG(valor_indicador)` por tribunal, ramo e indicador, ordenado por ano. | Pode ser de ano não consecutivo quando há lacuna, exceto se o SQL validar a continuidade. |
 | `variacao_absoluta` | Valor atual menos valor anterior. | Diferença na unidade original. |
 | `variacao_percentual` | `(valor atual - valor anterior) / ABS(valor anterior)`. | Proporção; `0.10` equivale a 10%. Indefinida se o anterior for zero/ausente. |
-| `ranking_no_indicador` | `DENSE_RANK` dentro do mesmo ano, ramo e indicador, do maior para o menor valor. | Ordenação matemática, não avaliação automática de melhor/pior tribunal. Aplicar polaridade para interpretar. |
+| `ranking_maior_valor` | `DENSE_RANK` dentro do mesmo ano, ramo e indicador, do maior para o menor valor. | Ordenação matemática, não avaliação automática de melhor/pior tribunal. Aplicar polaridade para interpretar. |
 | `quantidade_registros` | Número de linhas da chave agrupada. | Sinal para investigar granularidade, duplicatas e dimensões omitidas. |
 | `quantidade_valores_distintos` | Número de valores numéricos distintos na chave. | Mais de um pode indicar conflito ou dimensões legítimas não consideradas. |
 | `status_qualidade` | Classificação derivada das contagens de consistência. | Regra analítica do projeto, não dado original do CNJ. |
