@@ -4,22 +4,22 @@
 
 Bem-vinda ao meu portfólio de projetos práticos de análise de dados, SQL e engenharia analítica com fontes públicas. Cada projeto documenta o problema de negócio, as fontes, a lógica analítica, as validações e as limitações. Os resultados observados são incluídos após a execução e revisão das consultas.
 
-> **Em desenvolvimento:** o esquema oficial do projeto Justiça em Números, do CNJ, já foi documentado. Os resultados serão adicionados após executar as verificações de granularidade e as consultas no BigQuery.
+> **Em desenvolvimento:** o projeto Justiça em Números já inclui um pacote de dados e medidas para Power BI, com prévia estática e testes de consistência reproduzíveis. O relatório interativo ainda precisa ser montado no Power BI Desktop; a validação SQL no BigQuery também está pendente.
 
 ## Projetos
 
 ### Justiça em Números — indicadores do Poder Judiciário
 
-Análise exploratória dos indicadores do CNJ por tribunal e ano. O trabalho está organizado em três etapas: inspeção do esquema, perfil dos indicadores e comparação temporal com variações e rankings descritivos.
+Análise dos indicadores do CNJ por tribunal e ano, com consultas BigQuery e pacote importável para Power BI sobre fluxo processual. Inclui preparação de dados, medidas DAX e verificações de qualidade.
 
-- **Tecnologias:** SQL, Google BigQuery e Base dos Dados.
+- **Tecnologias:** SQL, Google BigQuery, Power BI, DAX, Power Query, Python e dados públicos do CNJ/Base dos Dados.
 - **Foco analítico:** evolução temporal, comparabilidade e qualidade dos dados.
-- **Status:** esquema e chave oficial confirmados na documentação; validação dos dados correntes e dos códigos dos indicadores pendente.
-- **Comece por:** [README do projeto](projetos/justica-em-numeros-cnj/README.md) · [guia das consultas SQL](projetos/justica-em-numeros-cnj/sql/README.md) · [catálogo dos indicadores](projetos/justica-em-numeros-cnj/docs/catalogo-indicadores.md) · [CSV com os 1.305 códigos](projetos/justica-em-numeros-cnj/docs/indicadores_disponiveis_2026-06.csv).
+- **Status:** CSV CNJ preparado e validado contra linhas detalhadas; prévia do dashboard disponível. O `.pbix` e a validação na tabela corrente do BigQuery ainda estão pendentes.
+- **Comece por:** [README do projeto](projetos/justica-em-numeros-cnj/README.md) · [pacote Power BI](projetos/justica-em-numeros-cnj/power-bi/README.md) · [prévia do dashboard](projetos/justica-em-numeros-cnj/power-bi/dashboard_preview.png) · [guia das consultas SQL](projetos/justica-em-numeros-cnj/sql/README.md) · [catálogo dos indicadores](projetos/justica-em-numeros-cnj/docs/catalogo-indicadores.md).
 
 ## Tecnologias e temas
 
-**SQL** · **Google BigQuery** · **Base dos Dados** · **dados públicos** · **análise exploratória**
+**SQL** · **Google BigQuery** · **Power BI** · **DAX** · **Power Query** · **Python** · **dados públicos** · **análise exploratória**
 
 ## Contato
 

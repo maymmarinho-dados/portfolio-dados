@@ -1,0 +1,120 @@
+// Tabela importada: dados_fluxo_cnj_powerbi (renomeie no Power BI para FatoFluxo)
+// Os campos IAD e TC da fonte são proporções 0–1; formate medidas IAD/TC como Percentual.
+// Medidas Consolidado usam somente TOTAL_JUSTICA; evitando somar totals com tribunais detalhados.
+
+// ===== 1º GRAU — totais por ramo da Justiça =====
+Casos Novos 1G =
+CALCULATE(
+    SUM(FatoFluxo[cn1_casos_novos_1g]);
+    FatoFluxo[tipo_registro] = "TOTAL_JUSTICA"
+)
+
+Casos Pendentes 1G =
+CALCULATE(
+    SUM(FatoFluxo[cp1_casos_pendentes_1g]);
+    FatoFluxo[tipo_registro] = "TOTAL_JUSTICA"
+)
+
+Processos Baixados 1G =
+CALCULATE(
+    SUM(FatoFluxo[tbaix1_processos_baixados_1g]);
+    FatoFluxo[tipo_registro] = "TOTAL_JUSTICA"
+)
+
+IAD 1G = DIVIDE([Processos Baixados 1G]; [Casos Novos 1G])
+
+Taxa de Congestionamento 1G =
+DIVIDE(
+    [Casos Pendentes 1G];
+    [Casos Pendentes 1G] + [Processos Baixados 1G]
+)
+
+// ===== 2º GRAU — totais por ramo da Justiça =====
+Casos Novos 2G =
+CALCULATE(
+    SUM(FatoFluxo[cn2_casos_novos_2g]);
+    FatoFluxo[tipo_registro] = "TOTAL_JUSTICA"
+)
+
+Casos Pendentes 2G =
+CALCULATE(
+    SUM(FatoFluxo[cp2_casos_pendentes_2g]);
+    FatoFluxo[tipo_registro] = "TOTAL_JUSTICA"
+)
+
+Processos Baixados 2G =
+CALCULATE(
+    SUM(FatoFluxo[tbaix2_processos_baixados_2g]);
+    FatoFluxo[tipo_registro] = "TOTAL_JUSTICA"
+)
+
+IAD 2G = DIVIDE([Processos Baixados 2G]; [Casos Novos 2G])
+
+Taxa de Congestionamento 2G =
+DIVIDE(
+    [Casos Pendentes 2G];
+    [Casos Pendentes 2G] + [Processos Baixados 2G]
+)
+
+// ===== JUIZADOS ESPECIAIS — totais por ramo da Justiça =====
+Casos Novos Juizados =
+CALCULATE(
+    SUM(FatoFluxo[cnje_casos_novos_juizados]);
+    FatoFluxo[tipo_registro] = "TOTAL_JUSTICA"
+)
+
+Casos Pendentes Juizados =
+CALCULATE(
+    SUM(FatoFluxo[cpje_casos_pendentes_juizados]);
+    FatoFluxo[tipo_registro] = "TOTAL_JUSTICA"
+)
+
+Processos Baixados Juizados =
+CALCULATE(
+    SUM(FatoFluxo[tbaixje_processos_baixados_juizados]);
+    FatoFluxo[tipo_registro] = "TOTAL_JUSTICA"
+)
+
+IAD Juizados = DIVIDE([Processos Baixados Juizados]; [Casos Novos Juizados])
+
+Taxa de Congestionamento Juizados =
+DIVIDE(
+    [Casos Pendentes Juizados];
+    [Casos Pendentes Juizados] + [Processos Baixados Juizados]
+)
+
+// ===== COMPARAÇÃO ENTRE TRIBUNAIS — use em gráfico por sigla_tribunal =====
+// Configure filtro de ano único no relatório. Estas medidas excluem linhas consolidadas.
+Casos Novos 1G - Tribunal =
+CALCULATE(
+    SUM(FatoFluxo[cn1_casos_novos_1g]);
+    FatoFluxo[tipo_registro] = "TRIBUNAL"
+)
+
+Casos Pendentes 1G - Tribunal =
+CALCULATE(
+    SUM(FatoFluxo[cp1_casos_pendentes_1g]);
+    FatoFluxo[tipo_registro] = "TRIBUNAL"
+)
+
+Processos Baixados 1G - Tribunal =
+CALCULATE(
+    SUM(FatoFluxo[tbaix1_processos_baixados_1g]);
+    FatoFluxo[tipo_registro] = "TRIBUNAL"
+)
+
+IAD 1G - Tribunal =
+DIVIDE([Processos Baixados 1G - Tribunal]; [Casos Novos 1G - Tribunal])
+
+Taxa de Congestionamento 1G - Tribunal =
+DIVIDE(
+    [Casos Pendentes 1G - Tribunal];
+    [Casos Pendentes 1G - Tribunal] + [Processos Baixados 1G - Tribunal]
+)
+
+// Medida opcional para validar total de 1º grau pela soma dos tribunais detalhados.
+Casos Novos 1G - Tribunais detalhados =
+CALCULATE(
+    SUM(FatoFluxo[cn1_casos_novos_1g]);
+    FatoFluxo[tipo_registro] = "TRIBUNAL"
+)

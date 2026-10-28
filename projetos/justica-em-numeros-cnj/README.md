@@ -2,7 +2,7 @@
 
 **Análise exploratória em SQL dos indicadores publicados pelo Conselho Nacional de Justiça (CNJ), com acesso pela Base dos Dados e execução no Google BigQuery.**
 
-> **Status: esquema documentado confirmado; validação dos dados pendente.** O schema oficial informa cinco colunas e a chave de unicidade. O teste de duplicidades deve ser executado na tabela BigQuery corrente. Este repositório não apresenta insights quantitativos ainda não executados.
+> **Status:** o esquema BigQuery está documentado; o pacote Power BI usa o arquivo oficial do CNJ de junho de 2026 e passou por testes reproduzíveis de chave, reconciliação e fórmulas. A validação da tabela corrente no BigQuery ainda está pendente, e o arquivo interativo `.pbix` precisa ser salvo no Power BI Desktop.
 
 ## Pergunta de negócio
 
@@ -32,6 +32,7 @@ A análise foi planejada para responder:
 - [Dicionário de dados](docs/dicionario-de-dados.md), com definições conceituais, unidades/polaridades a mapear e validações necessárias.
 - [Catálogo dos 1.305 indicadores](docs/catalogo-indicadores.md), com o [CSV completo de códigos e descrições](docs/indicadores_disponiveis_2026-06.csv) e orientações de tratamento.
 - [Roteiro de apresentação do dashboard no Looker Studio](docs/roteiro-apresentacao-dashboard-looker-studio.md), com fala sugerida, sequência das visualizações e campos a preencher após validar os resultados.
+- [Pacote para dashboard Power BI](power-bi/README.md), com CSV CNJ tratado, medidas DAX, consulta Power Query, testes e uma prévia estática do layout.
 - [Guia das consultas](sql/README.md), com entradas, etapas, campos entregues e limites de interpretação.
 
 ## Estrutura
@@ -44,6 +45,15 @@ justica-em-numeros-cnj/
 │   ├── catalogo-indicadores.md
 │   ├── roteiro-apresentacao-dashboard-looker-studio.md
 │   └── indicadores_disponiveis_2026-06.csv
+├── power-bi/
+│   ├── README.md
+│   ├── dados_fluxo_cnj_powerbi.csv
+│   ├── medidas_dax.dax
+│   ├── consulta_power_query.m
+│   ├── preparar_base_powerbi.py
+│   ├── validar_base_powerbi.py
+│   ├── gerar_previa.py
+│   └── dashboard_preview.png
 └── sql/
     ├── README.md
     ├── 00_inspecao_esquema.sql
@@ -78,11 +88,17 @@ Detalhes de cada script: [guia das consultas SQL](sql/README.md).
 
 ## Resultados
 
-**Ainda não publicados.** Esta seção será preenchida após confirmar o esquema, escolher um indicador com definição oficial, executar a consulta e validar a interpretação. Quando concluída, inclua resultados quantificados e uma visualização, sem extrapolar além do recorte analisado.
+O pacote Power BI traz uma prévia estática calculada com as linhas consolidadas da publicação CNJ de junho de 2026. A versão interativa ainda precisa ser montada e conferida no Power BI Desktop; os resultados das consultas SQL no BigQuery também permanecem pendentes.
+
+## Dashboard Power BI
+
+![Prévia estática do dashboard de fluxo processual](power-bi/dashboard_preview.png)
+
+Consulte o [passo a passo para importar os dados, criar medidas e montar as páginas](power-bi/README.md). A imagem é uma prévia estática do layout, não uma captura de um relatório interativo.
 
 ## Tecnologias
 
-`SQL` · `Google BigQuery` · `Base dos Dados` · `CNJ`
+`SQL` · `Google BigQuery` · `Power BI` · `DAX` · `Power Query` · `Python` · `CNJ`
 
 ## Sugestão de publicação no LinkedIn
 
